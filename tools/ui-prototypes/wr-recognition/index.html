@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WR Recognition System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --wr-bg: #050505;
+      --wr-panel: #101010;
+      --wr-accent: #00ff88;
+      --wr-accent-soft: #00ff8844;
+      --wr-text: #f5f5f5;
+      --wr-danger: #ff2255;
+      --wr-border: #262626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #202020 0, #050505 40%, #000000 100%);
+      color: var(--wr-text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      padding: 12px;
+    }
+
+    .wr-shell {
+      width: 100%;
+      max-width: 900px;
+      background: linear-gradient(135deg, #050505 0, #0b0b0b 40%, #050505 100%);
+      border: 1px solid var(--wr-border);
+      box-shadow: 0 0 40px #000000aa;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .wr-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--wr-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #000000 0, #101010 40%, #000000 100%);
+    }
+
+    .wr-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .wr-title {
+      font-size: 18px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--wr-accent);
+    }
+
+    .wr-subtitle {
+      font-size: 11px;
+      color: #aaaaaa;
+    }
+
+    .wr-badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--wr-accent-soft);
+      color: var(--wr-accent);
+      background: #000000;
+    }
+
+    .wr-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 0;
+      min-height: 420px;
+    }
+
+    @media (max-width: 720px) {
+      .wr-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .wr-panel {
+      padding: 12px 14px;
+      border-right: 1px solid var(--wr-border);
+    }
+
+    .wr-panel:last-child {
+      border-right: none;
+      border-left: 1px solid var(--wr-border);
+    }
+
+    @media (max-width: 720px) {
+      .wr-panel {
+        border-right: none;
+        border-bottom: 1px solid var(--wr-border);
+      }
+      .wr-panel:last-child {
+        border-left: none;
+        border-bottom: none;
+      }
+    }
+
+    .wr-panel-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #cccccc;
+      margin-bottom: 8px;
+    }
+
+    .wr-panel-sub {
+      font-size: 11px;
+      color: #888888;
+      margin-bottom: 10px;
+    }
+
+    .wr-input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .wr-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #bbbbbb;
+    }
+
+    .wr-input,
+    .wr-select {
+      width: 100%;
+      padding: 8px 9px;
+      border-radius: 6px;
+      border: 1px solid var(--wr-border);
+      background: #050505;
+      color: var(--wr-text);
+      font-size: 12px;
+      outline: none;
+    }
+
+    .wr-input:focus,
+    .wr-select:focus {
+      border-color: var(--wr-accent);
+      box-shadow: 0 0 0 1px var(--wr-accent-soft);
+    }
+
+    .wr-row-inline {
+      display: flex;
+      gap: 8px;
+    }
+
+    .wr-row-inline > * {
+      flex: 1;
+    }
+
+    .wr-button-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .wr-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--wr-border);
+      background: #050505;
+      color: var(--wr-text);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      cursor: pointer;
+      transition: 0.12s ease;
+    }
+
+    .wr-btn-primary {
+      border-color: var(--wr-accent-soft);
+      background: radial-gradient(circle at top, #00ff8844 0, #050505 60%);
+      color: var(--wr-accent);
+    }
+
+    .wr-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 12px #000000aa;
+    }
+
+    .wr-btn-primary:hover {
+      box-shadow: 0 0 16px #00ff8844;
+    }
+
+    .wr-btn-danger {
+      border-color: #ff225544;
+      color: var(--wr-danger);
+    }
+
+    .wr-meter-shell {
+      margin-top: 10px;
+      padding: 8px 9px;
+      border-radius: 8px;
+      border: 1px solid var(--wr-border);
+      background: #050505;
+    }
+
+    .wr-meter-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #999999;
+      margin-bottom: 4px;
+    }
+
+    .wr-meter-bar {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #151515;
+      overflow: hidden;
+    }
+
+    .wr-meter-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff2255 0, #ff9900 40%, #00ff88 100%);
+      transition: width 0.18s ease-out;
+    }
+
+    .wr-meter-text {
+      margin-top: 4px;
+      font-size: 10px;
+      color: #bbbbbb;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .wr-meter-text span {
+      opacity: 0.9;
+    }
+
+    .wr-log-shell {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wr-log-stream {
+      flex: 1;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid var(--wr-border);
+      background: #050505;
+      padding: 8px 9px;
+      font-size: 11px;
+      overflow-y: auto;
+    }
+
+    .wr-log-entry {
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed #222222;
+    }
+
+    .wr-log-entry:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .wr-log-tag-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+
+    .wr-log-tag {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--wr-accent);
+    }
+
+    .wr-log-tag-type {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #888888;
+    }
+
+    .wr-log-main {
+      font-size: 11px;
+      color: #dddddd;
+    }
+
+    .wr-log-meta {
+      font-size: 9px;
+      color: #777777;
+      margin-top: 2px;
+    }
+
+    .wr-footer {
+      padding: 8px 12px;
+      border-top: 1px solid var(--wr-border);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #777777;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .wr-footer span {
+      opacity: 0.9;
+    }
+
+    .wr-footer-violence {
+      color: var(--wr-accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="wr-shell">
+    <header class="wr-header">
+      <div class="wr-title-block">
+        <div class="wr-title">WorldRecognition</div>
+        <div class="wr-subtitle">Recognition System · Event Ingestion Rail</div>
+      </div>
+      <div class="wr-badge">WR · Outlaw Line</div>
+    </header>
+
+    <main class="wr-main">
+      <!-- LEFT: EVENT INGESTION -->
+      <section class="wr-panel">
+        <div class="wr-panel-title">Event Ingestion Console</div>
+        <div class="wr-panel-sub">
+          Feed WR a moment. It decides if it’s noise or a recognition‑grade hit.
+        </div>
+
+        <div class="wr-input-row">
+          <label class="wr-label" for="wrEventText">Event description</label>
+          <textarea
+            id="wrEventText"
+            class="wr-input"
+            rows="3"
+            placeholder="Example: 1320ft pass · 4.92s · no lift · crowd ignition at 300ft..."
+          ></textarea>
+        </div>
+
+        <div class="wr-row-inline">
+          <div class="wr-input-row">
+            <label class="wr-label" for="wrEventType">Event lane</label>
+            <select id="wrEventType" class="wr-select">
+              <option value="run">Run · Track</option>
+              <option value="arrival">Arrival · Staging</option>
+              <option value="submission">Submission · Federal</option>
+              <option value="vehicle">Vehicle · Build</option>
+              <option value="misc">Misc · Ambient</option>
+            </select>
+          </div>
+
+          <div class="wr-input-row">
+            <label class="wr-label" for="wrEventIntensity">Violence index</label>
+            <select id="wrEventIntensity" class="wr-select">
+              <option value="0.2">Mild · Street Pass</option>
+              <option value="0.45">Firm · Track Hit</option>
+              <option value="0.7">Hostile · Outlaw Pass</option>
+              <option value="0.9">Violent · WR Grade</option>
+              <option value="1.0">Federal · Archive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="wr-button-row">
+          <button class="wr-btn wr-btn-primary" id="wrSubmitEventBtn">
+            Ingest Event
+          </button>
+          <button class="wr-btn wr-btn-danger" id="wrClearEventBtn">
+            Clear Console
+          </button>
+        </div>
+
+        <div class="wr-meter-shell">
+          <div class="wr-meter-label">Recognition charge · live</div>
+          <div class="wr-meter-bar">
+            <div class="wr-meter-fill" id="wrMeterFill"></div>
+          </div>
+          <div class="wr-meter-text">
+            <span id="wrMeterTextLeft">Idle · waiting for a hit</span>
+            <span id="wrMeterTextRight">0.00 · recognition</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: EVENT STREAM -->
+      <section class="wr-panel">
+        <div class="wr-log-shell">
+          <div class="wr-panel-title">Recognition Stream</div>
+          <div class="wr-panel-sub">
+            Every ingested event lands here with a WR‑grade recognition score.
+          </div>
+
+          <div class="wr-log-stream" id="wrLogStream">
+            <!-- Entries injected here -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wr-footer">
+      <span>WR Recognition Rail · Single‑file prototype</span>
+      <span class="wr-footer-violence" id="wrFooterViolence">Violence: idle</span>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const eventTextEl = document.getElementById("wrEventText");
+      const eventTypeEl = document.getElementById("wrEventType");
+      const eventIntensityEl = document.getElementById("wrEventIntensity");
+      const submitBtn = document.getElementById("wrSubmitEventBtn");
+      const clearBtn = document.getElementById("wrClearEventBtn");
+      const meterFillEl = document.getElementById("wrMeterFill");
+      const meterTextLeftEl = document.getElementById("wrMeterTextLeft");
+      const meterTextRightEl = document.getElementById("wrMeterTextRight");
+      const logStreamEl = document.getElementById("wrLogStream");
+      const footerViolenceEl = document.getElementById("wrFooterViolence");
+
+      let lastEventId = 0;
+
+      function nowStamp() {
+        const d = new Date();
+        const hh = String(d.getHours()).padStart(2, "0");
+        const mm = String(d.getMinutes()).padStart(2, "0");
+        const ss = String(d.getSeconds()).padStart(2, "0");
+        return `${hh}:${mm}:${ss}`;
+      }
+
+      function computeRecognitionScore(text, type, intensity) {
+        const base = parseFloat(intensity || "0");
+        const lengthFactor = Math.min(text.length / 140, 1.2);
+        const densityFactor = text.split(/[·\-|]/).length;
+        const typeBoostMap = {
+          run: 0.12,
+          arrival: 0.08,
+          submission: 0.18,
+          vehicle: 0.15,
+          misc: 0.02,
+        };
+        const typeBoost = typeBoostMap[type] || 0;
+
+        let score = base * 0.6 + lengthFactor * 0.25 + densityFactor * 0.03 + typeBoost;
+        score = Math.max(0, Math.min(score, 1.0));
+        return score;
+      }
+
+      function scoreLabel(score) {
+        if (score < 0.25) return "Noise · not WR grade";
+        if (score < 0.45) return "Local · minor recognition";
+        if (score < 0.65) return "Track · recognized pass";
+        if (score < 0.85) return "Outlaw · WR lane";
+        return "Federal · archive candidate";
+      }
+
+      function typeLabel(type) {
+        switch (type) {
+          case "run":
+            return "Run · Track";
+          case "arrival":
+            return "Arrival · Staging";
+          case "submission":
+            return "Submission · Federal";
+          case "vehicle":
+            return "Vehicle · Build";
+          default:
+            return "Misc · Ambient";
+        }
+      }
+
+      function updateMeter(score, label) {
+        const pct = (score * 100).toFixed(0) + "%";
+        meterFillEl.style.width = pct;
+        meterTextLeftEl.textContent = label;
+        meterTextRightEl.textContent = score.toFixed(2) + " · recognition";
+        footerViolenceEl.textContent =
+          "Violence: " + (score >= 0.85 ? "armed" : score >= 0.55 ? "warming" : "idle");
+      }
+
+      function pushLogEntry(payload) {
+        const entryEl = document.createElement("div");
+        entryEl.className = "wr-log-entry";
+
+        const tagRowEl = document.createElement("div");
+        tagRowEl.className = "wr-log-tag-row";
+
+        const tagEl = document.createElement("div");
+        tagEl.className = "wr-log-tag";
+        tagEl.textContent = `WR-${String(payload.id).padStart(4, "0")} · ${payload.scoreLabel}`;
+
+        const typeEl = document.createElement("div");
+        typeEl.className = "wr-log-tag-type";
+        typeEl.textContent = typeLabel(payload.type);
+
+        tagRowEl.appendChild(tagEl);
+        tagRowEl.appendChild(typeEl);
+
+        const mainEl = document.createElement("div");
+        mainEl.className = "wr-log-main";
+        mainEl.textContent = payload.text || "[empty event]";
+
+        const metaEl = document.createElement("div");
+        metaEl.className = "wr-log-meta";
+        metaEl.textContent = `${payload.time} · score ${payload.score.toFixed(
+          2
+        )} · violence ${payload.intensity}`;
+
+        entryEl.appendChild(tagRowEl);
+        entryEl.appendChild(mainEl);
+        entryEl.appendChild(metaEl);
+
+        logStreamEl.insertBefore(entryEl, logStreamEl.firstChild);
+      }
+
+      function ingestEvent() {
+        const text = (eventTextEl.value || "").trim();
+        const type = eventTypeEl.value || "misc";
+        const intensity = eventIntensityEl.value || "0";
+
+        if (!text) {
+          meterTextLeftEl.textContent = "Console empty · feed WR a moment";
+          updateMeter(0, "Idle · waiting for a hit");
+          return;
+        }
+
+        const score = computeRecognitionScore(text, type, intensity);
+        const label = scoreLabel(score);
+
+        lastEventId += 1;
+
+        updateMeter(score, label);
+
+        pushLogEntry({
+          id: lastEventId,
+          text,
+          type,
+          intensity,
+          score,
+          scoreLabel: label,
+          time: nowStamp(),
+        });
+
+        eventTextEl.value = "";
+      }
+
+      function clearConsole() {
+        eventTextEl.value = "";
+        updateMeter(0, "Idle · waiting for a hit");
+        meterTextLeftEl.textContent = "Console cleared · WR listening";
+        footerViolenceEl.textContent = "Violence: idle";
+      }
+
+      submitBtn.addEventListener("click", ingestEvent);
+      clearBtn.addEventListener("click", clearConsole);
+
+      eventTextEl.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          ingestEvent();
+        }
+      });
+
+      updateMeter(0, "Idle · waiting for a hit");
+    })();
+  </script>
+</body>
+</html>
