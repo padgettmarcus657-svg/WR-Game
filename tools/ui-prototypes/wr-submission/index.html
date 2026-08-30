@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WR Submission System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+    body {
+        background:#000;
+        color:#fff;
+        font-family:Arial, sans-serif;
+        margin:0;
+        padding:0;
+    }
+
+    .seal {
+        text-align:center;
+        padding:20px;
+        font-size:22px;
+        font-weight:bold;
+        letter-spacing:1px;
+        border-bottom:2px solid #444;
+    }
+
+    .container {
+        padding:20px;
+    }
+
+    .section-title {
+        font-size:20px;
+        margin-top:25px;
+        margin-bottom:10px;
+        font-weight:bold;
+    }
+
+    input, textarea {
+        width:100%;
+        padding:12px;
+        margin-top:10px;
+        border:none;
+        border-radius:6px;
+        background:#111;
+        color:#fff;
+        font-size:16px;
+    }
+
+    button {
+        width:100%;
+        padding:14px;
+        margin-top:20px;
+        background:#fff;
+        color:#000;
+        font-size:18px;
+        font-weight:bold;
+        border:none;
+        border-radius:6px;
+    }
+
+    .packet-preview {
+        background:#111;
+        padding:15px;
+        margin-top:20px;
+        border-radius:6px;
+        font-size:15px;
+        white-space:pre-wrap;
+    }
+
+    .next-link {
+        margin-top:30px;
+        text-align:center;
+        font-size:18px;
+        padding:15px;
+        border-top:2px solid #444;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="seal">
+    WR FEDERAL SUBMISSION SEAL<br>
+    — AUTHORIZED PACKET INTAKE —
+</div>
+
+<div class="container">
+
+    <div class="section-title">Submission Intake</div>
+
+    <input id="fullName" placeholder="Full Legal Name">
+    <input id="streetName" placeholder="Street Name / Recognition Alias">
+    <textarea id="submissionStatement" placeholder="Submission Statement"></textarea>
+
+    <button onclick="buildPacket()">Generate Submission Packet</button>
+
+    <div id="packet" class="packet-preview" style="display:none;"></div>
+
+    <button onclick="submitPacket()">Submit Packet</button>
+
+    <div id="status" class="packet-preview" style="display:none;"></div>
+
+    <div class="next-link">
+        After submission, progression continues to:<br>
+        <strong>WR Arrival System</strong>
+    </div>
+
+</div>
+
+<script>
+function buildPacket() {
+    const name = document.getElementById('fullName').value;
+    const alias = document.getElementById('streetName').value;
+    const statement = document.getElementById('submissionStatement').value;
+
+    const packet = `\nWR FEDERAL SUBMISSION PACKET\n----------------------------\nFull Legal Name: ${name}\nRecognition Alias: ${alias}\n\nSubmission Statement:\n${statement}\n\nPacket Timestamp: ${new Date().toLocaleString()}\n`;
+
+    const packetBox = document.getElementById('packet');
+    packetBox.style.display = "block";
+    packetBox.textContent = packet;
+}
+
+function submitPacket() {
+    const statusBox = document.getElementById('status');
+    statusBox.style.display = "block";
+    statusBox.textContent =
+        "SUBMISSION RECEIVED\n" +
+        "----------------------------\n" +
+        "Your packet has been accepted into WR Federal Submission.\n" +
+        "Proceed to WR Arrival System.";
+}
+</script>
+
+</body>
+</html>
