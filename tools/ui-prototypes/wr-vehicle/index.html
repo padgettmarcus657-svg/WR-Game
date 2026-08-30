@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WR Vehicle System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+    body {
+        background:#000;
+        color:#fff;
+        font-family:Arial, sans-serif;
+        margin:0;
+        padding:0;
+    }
+
+    .header {
+        text-align:center;
+        padding:20px;
+        font-size:22px;
+        font-weight:bold;
+        letter-spacing:1px;
+        border-bottom:2px solid #444;
+    }
+
+    .container {
+        padding:20px;
+    }
+
+    .section-title {
+        font-size:20px;
+        margin-top:25px;
+        margin-bottom:10px;
+        font-weight:bold;
+    }
+
+    .card {
+        background:#111;
+        padding:15px;
+        border-radius:6px;
+        margin-top:10px;
+        font-size:15px;
+    }
+
+    .row {
+        margin-top:15px;
+        padding:12px;
+        border-radius:6px;
+        background:#111;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        font-size:15px;
+    }
+
+    .row span {
+        display:block;
+    }
+
+    input, select {
+        width:100%;
+        padding:12px;
+        margin-top:10px;
+        border:none;
+        border-radius:6px;
+        background:#111;
+        color:#fff;
+        font-size:16px;
+    }
+
+    button {
+        width:100%;
+        padding:14px;
+        margin-top:20px;
+        background:#fff;
+        color:#000;
+        font-size:18px;
+        font-weight:bold;
+        border:none;
+        border-radius:6px;
+    }
+
+    .status {
+        background:#111;
+        padding:15px;
+        margin-top:20px;
+        border-radius:6px;
+        font-size:15px;
+        white-space:pre-wrap;
+    }
+
+    .next-link {
+        margin-top:30px;
+        text-align:center;
+        font-size:18px;
+        padding:15px;
+        border-top:2px solid #444;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    WR VEHICLE SYSTEM<br>
+    — FEDERAL VEHICLE ASSIGNMENT —
+</div>
+
+<div class="container">
+
+    <div class="section-title">Arrival Context</div>
+    <div class="card" id="arrivalContext">
+        This prototype assumes WR Arrival System hands off:<br><br>
+        • Name / Alias<br>
+        • Arrival Timestamp<br><br>
+        Use the controls below to simulate that handoff and assign a vehicle.
+    </div>
+
+    <div class="section-title">Vehicle Assignment</div>
+
+    <input id="driverName" placeholder="Driver Name (from Arrival)">
+    <input id="driverAlias" placeholder="Recognition Alias (from Arrival)">
+
+    <select id="vehicleClass">
+        <option value="">Select Vehicle Class</option>
+        <option value="Outlaw Drag">Outlaw Drag</option>
+        <option value="Street Legal">Street Legal</option>
+        <option value="Exhibition">Exhibition</option>
+    </select>
+
+    <input id="wheelbase" placeholder="Wheelbase (inches)">
+    <input id="torqueSpike" placeholder="Torque Spike Level (1–10)">
+    <input id="launchViolence" placeholder="Launch Violence Rating (1–10)">
+
+    <button onclick="assignVehicle()">Generate Vehicle Assignment</button>
+
+    <div id="vehicleCard" class="status" style="display:none;"></div>
+
+    <button onclick="lockVehicle()">Lock Vehicle Assignment</button>
+
+    <div id="vehicleStatus" class="status" style="display:none;"></div>
+
+    <div class="next-link">
+        Progression chain complete:<br>
+        <strong>Recognition → Submission → Arrival → Vehicle</strong>
+    </div>
+
+</div>
+
+<script>
+function assignVehicle() {
+    const name = document.getElementById('driverName').value || "Unspecified Name";
+    const alias = document.getElementById('driverAlias').value || "Unspecified Alias";
+    const vClass = document.getElementById('vehicleClass').value || "Unspecified Class";
+    const wheelbase = document.getElementById('wheelbase').value || "N/A";
+    const torque = document.getElementById('torqueSpike').value || "N/A";
+    const violence = document.getElementById('launchViolence').value || "N/A";
+
+    const card = `\nWR FEDERAL VEHICLE ASSIGNMENT\n----------------------------\nDriver Name: ${name}\nRecognition Alias: ${alias}\n\nVehicle Class: ${vClass}\nWheelbase: ${wheelbase} in\nTorque Spike Level: ${torque}\nLaunch Violence Rating: ${violence}\n\nAssignment Timestamp: ${new Date().toLocaleString()}\n`;
+
+    const vehicleBox = document.getElementById('vehicleCard');
+    vehicleBox.style.display = "block";
+    vehicleBox.textContent = card;
+}
+
+function lockVehicle() {
+    const statusBox = document.getElementById('vehicleStatus');
+    statusBox.style.display = "block";
+    statusBox.textContent =
+        "VEHICLE ASSIGNMENT LOCKED\n" +
+        "----------------------------\n" +
+        "Vehicle record has been sealed in WR Federal Vehicle Registry.\n" +
+        "Full progression chain is now active.";
+}
+</script>
+
+</body>
+</html>
