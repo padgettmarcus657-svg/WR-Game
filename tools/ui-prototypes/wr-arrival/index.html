@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WR Arrival System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+    body {
+        background:#000;
+        color:#fff;
+        font-family:Arial, sans-serif;
+        margin:0;
+        padding:0;
+    }
+
+    .header {
+        text-align:center;
+        padding:20px;
+        font-size:22px;
+        font-weight:bold;
+        letter-spacing:1px;
+        border-bottom:2px solid #444;
+    }
+
+    .container {
+        padding:20px;
+    }
+
+    .section-title {
+        font-size:20px;
+        margin-top:25px;
+        margin-bottom:10px;
+        font-weight:bold;
+    }
+
+    .badge {
+        background:#111;
+        padding:15px;
+        border-radius:6px;
+        margin-top:10px;
+        font-size:15px;
+    }
+
+    .arrival-row {
+        margin-top:15px;
+        padding:12px;
+        border-radius:6px;
+        background:#111;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        font-size:15px;
+    }
+
+    .arrival-row span {
+        display:block;
+    }
+
+    button {
+        width:100%;
+        padding:14px;
+        margin-top:20px;
+        background:#fff;
+        color:#000;
+        font-size:18px;
+        font-weight:bold;
+        border:none;
+        border-radius:6px;
+    }
+
+    .status {
+        background:#111;
+        padding:15px;
+        margin-top:20px;
+        border-radius:6px;
+        font-size:15px;
+        white-space:pre-wrap;
+    }
+
+    .next-link {
+        margin-top:30px;
+        text-align:center;
+        font-size:18px;
+        padding:15px;
+        border-top:2px solid #444;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    WR ARRIVAL SYSTEM<br>
+    — FEDERAL ARRIVAL REGISTRY —
+</div>
+
+<div class="container">
+
+    <div class="section-title">Arrival Badge</div>
+    <div id="arrivalBadge" class="badge">
+        No active arrival yet.<br>
+        Awaiting packet from WR Submission System.
+    </div>
+
+    <div class="section-title">Incoming Submission Packet</div>
+    <div class="badge">
+        This prototype assumes the WR Submission System hands off:<br><br>
+        • Full Legal Name<br>
+        • Recognition Alias<br>
+        • Submission Timestamp<br><br>
+        Use the controls below to simulate that handoff.
+    </div>
+
+    <button onclick="simulateArrival()">Simulate Arrival From Submission</button>
+
+    <div class="section-title">Arrival Log</div>
+    <div id="arrivalLog" class="status">
+        No arrivals logged yet.
+    </div>
+
+    <button onclick="lockArrival()">Lock Arrival & Proceed to Vehicle</button>
+
+    <div id="arrivalStatus" class="status" style="display:none;"></div>
+
+    <div class="next-link">
+        After arrival lock, progression continues to:<br>
+        <strong>WR Vehicle System</strong>
+    </div>
+
+</div>
+
+<script>
+function simulateArrival() {
+    // In a real chain, these would come from WR Submission.
+    const name = "Simulated Name";
+    const alias = "Simulated Alias";
+    const timestamp = new Date().toLocaleString();
+
+    const badge = document.getElementById('arrivalBadge');
+    badge.innerHTML = `
+ARRIVAL ACTIVE<br><br>
+Name: ${name}<br>
+Recognition Alias: ${alias}<br>
+Arrival Timestamp: ${timestamp}
+`;
+
+    const log = document.getElementById('arrivalLog');
+    const entry = `
+[ARRIVAL ENTRY]
+Name: ${name}
+Alias: ${alias}
+Arrival Timestamp: ${timestamp}
+----------------------------
+`;
+    log.textContent = entry;
+}
+
+function lockArrival() {
+    const statusBox = document.getElementById('arrivalStatus');
+    statusBox.style.display = "block";
+    statusBox.textContent =
+        "ARRIVAL LOCKED\n" +
+        "----------------------------\n" +
+        "Arrival record has been sealed in WR Federal Arrival Registry.\n" +
+        "Proceed to WR Vehicle System for assignment.";
+}
+</script>
+
+</body>
+</html>
